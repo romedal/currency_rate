@@ -18,8 +18,10 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "romedalTAG";
-    StringRequest stringRequest; // Assume this exists.
-    RequestQueue queue;  // Assume this exists.
+    public static final String URL = "https://api.exchangeratesapi.io/latest?symbols=USD";
+
+    StringRequest stringRequest;
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +33,12 @@ public class MainActivity extends AppCompatActivity {
         final TextView textView = (TextView) findViewById(R.id.txtv);
 
         queue = Volley.newRequestQueue(this);
-        String url = "https://api.exchangeratesapi.io/latest?symbols=USD";
-
-        stringRequest = new StringRequest(Request.Method.GET, url,
+        stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     float usd10000eur = 0;
                     @Override
                     public void onResponse(String response) {
                         Log.i(TAG, response);
-                        // Display the first 500 characters of the response string.
                         try {
                             JSONObject ResponseObject = new JSONObject(response);
                             String usd = ResponseObject.getJSONObject("rates").getString("USD");
@@ -53,8 +52,9 @@ public class MainActivity extends AppCompatActivity {
                             Log.e(TAG, "exception romedal");
                             e.printStackTrace();
                         }
+
                         int usd10000eurInt = (int)usd10000eur;
-                        textView.setText("10K EUR is: " + usd10000eurInt + " $");
+                        textView.setText(String.format("10K EUR is: %d $", usd10000eurInt));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         stringRequest.setTag(TAG);
-        
         queue.add(stringRequest);
 
     }
