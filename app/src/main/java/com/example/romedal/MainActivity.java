@@ -16,6 +16,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -101,8 +103,10 @@ public class MainActivity extends AppCompatActivity {
                                 Integer value = (Integer) treeMap.get(key);
                                 Log.v(TAG, key + " =>>>>>>> " + value);
                                 JSONObject ResponseObjectusd = new JSONObject(rates.get(rates.names().getString(value)).toString());
-
-                                result += String.format("10K EUR is: %d $ within the date %s \r\n", (int) calculate10K_eur(ResponseObjectusd.get("USD").toString()), rates.names().getString(value));
+                                NumberFormat formatter = new DecimalFormat("##,###");
+                                String formattedNumber = formatter.format( (double) calculate10K_eur(ResponseObjectusd.get("USD").toString()));
+                                result += String.format("%s %s $ %s %s \r\n", getResources().getString(R.string.first_part_msg),
+                                        formattedNumber, getResources().getString(R.string.second_part_msg), rates.names().getString(value));
 
                             }
 
