@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">romedal</string>
+    <string name="button_text">GET RATES</string>
+    <string name="greetings_text">Hello dear client</string>
 </resources>
