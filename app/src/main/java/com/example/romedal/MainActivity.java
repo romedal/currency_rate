@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -101,7 +102,9 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView textView = (TextView) findViewById(R.id.txtv);
         queue = Volley.newRequestQueue(this);
-        String reqFinal = "https://api.exchangeratesapi.io/history?start_at="+yearReq+"-" + monthReq + "-01&end_at=" + yearReq + "-" + monthReq + "-28&symbols=USD&&base=EUR";
+        int c = 1;
+//        String b =
+        String reqFinal = "https://api.exchangeratesapi.io/history?start_at="+yearReq+"-" + monthReq + "-01&end_at=" + yearReq + "-" + monthReq + "-" + getDayOfMonth(monthReq, yearReq) + "&symbols=USD&&base=EUR";
         Log.e(TAG, "romedal777" + reqFinal);
         stringRequest = new StringRequest(Request.Method.GET, reqFinal,
                 new Response.Listener<String>() {
@@ -132,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                                 result += String.format("%s %s $ %s %s \r\n", getResources().getString(R.string.first_part_msg),
                                         formattedNumber, getResources().getString(R.string.second_part_msg), rates.names().getString(value));
                                 points.put(new PointValue(key,  (int) (double) calculate10K_eur(ResponseObjectusd.get("USD").toString())), "");
-
                             }
 
                         } catch (JSONException e) {
@@ -156,18 +158,18 @@ public class MainActivity extends AppCompatActivity {
         Spinner spinner;
         Spinner spinner2;
         Map<String, String> monthMap = new HashMap<>();
-        monthMap.put("January", "01");
-        monthMap.put("Fabuaru", "02");
-        monthMap.put("April", "03");
-        monthMap.put("March", "04");
-        monthMap.put("May", "05");
-        monthMap.put("June", "06");
-        monthMap.put("July", "07");
-        monthMap.put("August", "08");
-        monthMap.put("September", "09");
-        monthMap.put("October", "10");
-        monthMap.put("November", "11");
-        monthMap.put("December", "12");
+        monthMap.put("January",     "01");
+        monthMap.put("Fabuary",     "02");
+        monthMap.put("March",       "03");
+        monthMap.put("April",       "04");
+        monthMap.put("May",         "05");
+        monthMap.put("June",        "06");
+        monthMap.put("July",        "07");
+        monthMap.put("August",      "08");
+        monthMap.put("September",   "09");
+        monthMap.put("October",     "10");
+        monthMap.put("November",    "11");
+        monthMap.put("December",    "12");
         List<String> monthList;
         List<String> yearList = new ArrayList<>();
          for (int i = 2020; i > 1999; i--){
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         spinner2 = findViewById(R.id.spinner2);
         monthList = new ArrayList<>();
         monthList.add("January");
-        monthList.add("Fabuaru");
+        monthList.add("Fabuary");
         monthList.add("April");
         monthList.add("March");
         monthList.add("May");
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 monthReq = monthMap.get(monthList.get(position).toString());
-                Log.i(TAG, "romedal777 " + monthList.get(position) + monthReq);
+                Log.i(TAG, "romedal777 " + monthList.get(position) + " " + monthReq);
             }
 
             @Override
@@ -220,6 +222,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public String getDayOfMonth(String month, String year)
+    {
+        int daysCount = 0, date = 1;
+        DecimalFormat twodigits = new DecimalFormat("00");
+        Calendar calendar = Calendar.getInstance();
+        int yearCalendar = Integer.parseInt(year);
+        int monthCalendar = Integer.parseInt(month);
+        calendar.set(yearCalendar, monthCalendar - 1, date);
+        daysCount = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        Log.d(TAG, "number of days in month: monthCalendar yearCalendar daysCount" + monthCalendar + " " + yearCalendar + " " + daysCount);
+        Log.d(TAG, "number of days in month: " + twodigits.format(daysCount));
+        return twodigits.format(daysCount);
+    }
+
     private float calculate10K_eur(String usd) {
         float usd10000eur = Float.parseFloat(usd);
         Log.d(TAG, "converted => " + usd10000eur);
@@ -231,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     private void setChart(Map<PointValue, String> hp){
         LineChartView chart = findViewById(R.id.chart);
         chart.setTransitionName("romedal trans name");
-        chart.setTooltipText("romedal chart");
+//        chart.setTooltipText("romedal chart");
         chart.setContentDescription("romedal content desc");
         Axis axisX = new Axis();
         axisX.setName("Day of month");
@@ -254,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         {
             listX.add(new AxisValue(i));
         }
-        for (int i = 10000; i < 12500; i+=50)
+        for (int i = 8000; i < 12500; i+=50)
         {
             listY.add(new AxisValue(i));
         }
@@ -271,7 +287,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Line line = new Line(values).setColor(Color.BLUE).setCubic(true);
-        line.setHasPoints(true).setFilled(true);
+        line.setHasLabels(true);
+        line.setHasLines(true);
+        line.setCubic(true);
+        line.setHasPoints(true);
+        line.setFilled(true);
+        line.setHasLabelsOnlyForSelected(true);
+        line.setStrokeWidth(2);
+        line.setPointRadius(10);
         List<Line> lines = new ArrayList<Line>();
         lines.add(line);
 
