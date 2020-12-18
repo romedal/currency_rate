@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private static String monthReq= "01";
     private static String yearReq= "2020";
 
-
     StringRequest stringRequest;
     RequestQueue queue;
 
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView textView = (TextView) findViewById(R.id.txtv);
         queue = Volley.newRequestQueue(this);
         int c = 1;
-        String reqFinal = "https://api.exchangeratesapi.io/history?start_at="+yearReq+"-" + monthReq + "-01&end_at=" + yearReq + "-" + monthReq + "-" + getDayOfMonth(monthReq, yearReq) + "&symbols=USD&&base=EUR";
+        String reqFinal = String.format("https://api.exchangeratesapi.io/history?start_at=%s-%s-01&end_at=%s-%s-%s&symbols=USD&&base=EUR", yearReq, monthReq, yearReq, monthReq, getDayOfMonth(monthReq, yearReq));
         Log.i(TAG, reqFinal);
         stringRequest = new StringRequest(Request.Method.GET, reqFinal,
                 (Response.Listener<String>) response -> {
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             Integer value = (Integer) treeMap.get(key);
                             Log.v(TAG, key + " =>>>>>>> " + value);
                             JSONObject ResponseObjectusd = new JSONObject(rates.get(rates.names().getString(value)).toString());
-                            NumberFormat formatter = new DecimalFormat("##,###");
+                            NumberFormat formatter = new DecimalFormat(getString(R.string.DecFormPattern));
                             String formattedNumber = formatter.format((double) calculate10K_eur(ResponseObjectusd.get("USD").toString()));
                             result += String.format("%s %s $ %s %s \r\n", getResources().getString(R.string.first_part_msg),
                                     formattedNumber, getResources().getString(R.string.second_part_msg), rates.names().getString(value));
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     } catch (JSONException e) {
-                        Log.e(TAG, "exception is caught by romedal");
+                        Log.e(TAG, getString(R.string.exc_msg));
                         e.printStackTrace();
                     }
                     setChart(points);
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                textView.setText("That didn't work!");
+                textView.setText(getString(R.string.err_text));
             }
         });
         stringRequest.setTag(TAG);

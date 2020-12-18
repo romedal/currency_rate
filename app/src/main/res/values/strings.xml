@@ -30,5 +30,6 @@
     <string name="d10">10</string>
     <string name="d11">11</string>
     <string name="d12">12</string>
+    <string name="DecFormPattern">##,###</string>
 
 </resources>
