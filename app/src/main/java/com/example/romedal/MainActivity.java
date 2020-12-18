@@ -2,6 +2,7 @@ package com.example.romedal;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,33 +67,25 @@ public class MainActivity extends AppCompatActivity {
         stringRequest = new StringRequest(Request.Method.GET, reqFinal,
                 new Response.Listener<String>() {
                     float usd10000eur = 0;
+                    @SuppressLint("DefaultLocale")
                     @Override
                     public void onResponse(String response) {
                         Log.i(TAG, response);
                         try {
                             JSONObject ResponseObject = new JSONObject(response);
                             String usd = ResponseObject.getJSONObject("rates").getString("USD");
-                            Log.d(TAG, usd);
                             usd10000eur = Float.parseFloat(usd);
-                            Log.e(TAG, "romedal777" + reqFinal);
-                            Log.d(TAG, " converted " + usd10000eur);
                             usd10000eur *= 10000;
-                            Log.d(TAG, "after multiplay " + usd10000eur);
-
                         } catch (JSONException e) {
-                            Log.e(TAG, "exception is caught by romedal");
+                            Log.e(TAG, getString(R.string.exc_msg));
                             e.printStackTrace();
                         }
 
                         int usd10000eurInt = (int)usd10000eur;
-                        textView.setText(String.format("10K EUR is: %d $", usd10000eurInt));
+                        textView.setText(String.format(getString(R.string.first_part_msg) + "%d $", usd10000eurInt));
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                textView.setText("That didn't work!");
-            }
-        });
+                }, error -> textView.setText(getString(R.string.err_text)));
+
         stringRequest.setTag(TAG);
         queue.add(stringRequest);
 
@@ -103,47 +96,42 @@ public class MainActivity extends AppCompatActivity {
         final TextView textView = (TextView) findViewById(R.id.txtv);
         queue = Volley.newRequestQueue(this);
         int c = 1;
-//        String b =
         String reqFinal = "https://api.exchangeratesapi.io/history?start_at="+yearReq+"-" + monthReq + "-01&end_at=" + yearReq + "-" + monthReq + "-" + getDayOfMonth(monthReq, yearReq) + "&symbols=USD&&base=EUR";
-        Log.e(TAG, "romedal777" + reqFinal);
+        Log.i(TAG, reqFinal);
         stringRequest = new StringRequest(Request.Method.GET, reqFinal,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String response) {
-                        String result = "";
-                        Map points = new LinkedHashMap<PointValue, String>();
-                        Log.d(TAG, "respone =>" + response);
-                        try {
-                            JSONObject ResponseObject = new JSONObject(response.trim());
-                            JSONObject rates = ResponseObject.getJSONObject("rates");
-                            Iterator<String> keys = rates.keys();
-                            Map treeMap = new TreeMap<Integer, Integer>();
-                            for (int i = 0; i < rates.names().length(); i++) {
-                                Log.v(TAG, "" + Integer.parseInt(rates.names().getString(i).substring(8)));
-                                treeMap.put(Integer.parseInt(rates.names().getString(i).substring(8)), i);
-                            }
-
-                            Set keyss = treeMap.keySet();
-                            for (Iterator i = keyss.iterator(); i.hasNext(); ) {
-                                Integer key = (Integer) i.next();
-                                Integer value = (Integer) treeMap.get(key);
-                                Log.v(TAG, key + " =>>>>>>> " + value);
-                                JSONObject ResponseObjectusd = new JSONObject(rates.get(rates.names().getString(value)).toString());
-                                NumberFormat formatter = new DecimalFormat("##,###");
-                                String formattedNumber = formatter.format( (double) calculate10K_eur(ResponseObjectusd.get("USD").toString()));
-                                result += String.format("%s %s $ %s %s \r\n", getResources().getString(R.string.first_part_msg),
-                                        formattedNumber, getResources().getString(R.string.second_part_msg), rates.names().getString(value));
-                                points.put(new PointValue(key,  (int) (double) calculate10K_eur(ResponseObjectusd.get("USD").toString())), "");
-                            }
-
-                        } catch (JSONException e) {
-                            Log.e(TAG, "exception is caught by romedal");
-                            e.printStackTrace();
+                (Response.Listener<String>) response -> {
+                    String result = "";
+                    Map points = new LinkedHashMap<PointValue, String>();
+                    Log.i(TAG, "respone =>" + response);
+                    try {
+                        JSONObject ResponseObject = new JSONObject(response.trim());
+                        JSONObject rates = ResponseObject.getJSONObject("rates");
+                        Iterator<String> keys = rates.keys();
+                        Map treeMap = new TreeMap<Integer, Integer>();
+                        for (int i = 0; i < rates.names().length(); i++) {
+                            Log.v(TAG, "" + Integer.parseInt(rates.names().getString(i).substring(8)));
+                            treeMap.put(Integer.parseInt(rates.names().getString(i).substring(8)), i);
                         }
-                        setChart(points);
-                        textView.setText(result);
+
+                        Set keyss = treeMap.keySet();
+                        for (Object obj : keyss) {
+                            Integer key = (Integer) obj;
+                            Integer value = (Integer) treeMap.get(key);
+                            Log.v(TAG, key + " =>>>>>>> " + value);
+                            JSONObject ResponseObjectusd = new JSONObject(rates.get(rates.names().getString(value)).toString());
+                            NumberFormat formatter = new DecimalFormat("##,###");
+                            String formattedNumber = formatter.format((double) calculate10K_eur(ResponseObjectusd.get("USD").toString()));
+                            result += String.format("%s %s $ %s %s \r\n", getResources().getString(R.string.first_part_msg),
+                                    formattedNumber, getResources().getString(R.string.second_part_msg), rates.names().getString(value));
+                            points.put(new PointValue(key, (int) (double) calculate10K_eur(ResponseObjectusd.get("USD").toString())), "");
+                        }
+
+                    } catch (JSONException e) {
+                        Log.e(TAG, "exception is caught by romedal");
+                        e.printStackTrace();
                     }
+                    setChart(points);
+                    textView.setText(result);
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -155,50 +143,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void makeSpinners() {
-        Spinner spinner;
-        Spinner spinner2;
+
+        Spinner spinner  = findViewById(R.id.spinner);
+        Spinner spinner2 = findViewById(R.id.spinner2);
+
         Map<String, String> monthMap = new HashMap<>();
-        monthMap.put("January",     "01");
-        monthMap.put("Fabuary",     "02");
-        monthMap.put("March",       "03");
-        monthMap.put("April",       "04");
-        monthMap.put("May",         "05");
-        monthMap.put("June",        "06");
-        monthMap.put("July",        "07");
-        monthMap.put("August",      "08");
-        monthMap.put("September",   "09");
-        monthMap.put("October",     "10");
-        monthMap.put("November",    "11");
-        monthMap.put("December",    "12");
-        List<String> monthList;
+        monthMap.put(getString(R.string.Jan), getString(R.string.d1));
+        monthMap.put(getString(R.string.Fab), getString(R.string.d2));
+        monthMap.put(getString(R.string.Mar), getString(R.string.d3));
+        monthMap.put(getString(R.string.Apr), getString(R.string.d4));
+        monthMap.put(getString(R.string.May), getString(R.string.d5));
+        monthMap.put(getString(R.string.Jun), getString(R.string.d6));
+        monthMap.put(getString(R.string.Jul), getString(R.string.d7));
+        monthMap.put(getString(R.string.Aug), getString(R.string.d8));
+        monthMap.put(getString(R.string.Sep), getString(R.string.d9));
+        monthMap.put(getString(R.string.Oct), getString(R.string.d10));
+        monthMap.put(getString(R.string.Nov), getString(R.string.d11));
+        monthMap.put(getString(R.string.Dec), getString(R.string.d12));
+
         List<String> yearList = new ArrayList<>();
-         for (int i = 2020; i > 1999; i--){
+
+        for (int i = 2020; i > 1999; i--){
             yearList.add((String.valueOf(i)));
         }
+
         spinner = findViewById(R.id.spinner);
         spinner2 = findViewById(R.id.spinner2);
-        monthList = new ArrayList<>();
-        monthList.add("January");
-        monthList.add("Fabuary");
-        monthList.add("April");
-        monthList.add("March");
-        monthList.add("May");
-        monthList.add("June");
-        monthList.add("July");
-        monthList.add("August");
-        monthList.add("September");
-        monthList.add("October");
-        monthList.add("November");
-        monthList.add("December");
+
+        List<String> monthList = new ArrayList<>();
+        monthList.add(getString(R.string.Jan));
+        monthList.add(getString(R.string.Fab));
+        monthList.add(getString(R.string.Mar));
+        monthList.add(getString(R.string.Apr));
+        monthList.add(getString(R.string.May));
+        monthList.add(getString(R.string.Jun));
+        monthList.add(getString(R.string.Jul));
+        monthList.add(getString(R.string.Aug));
+        monthList.add(getString(R.string.Sep));
+        monthList.add(getString(R.string.Oct));
+        monthList.add(getString(R.string.Nov));
+        monthList.add(getString(R.string.Dec));
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, monthList);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, yearList);
+
         spinner.setAdapter(adapter);
         spinner2.setAdapter(adapter2);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                monthReq = monthMap.get(monthList.get(position).toString());
-                Log.i(TAG, "romedal777 " + monthList.get(position) + " " + monthReq);
+                monthReq = monthMap.get(monthList.get(position));
+                Log.i(TAG, monthList.get(position) + " " + monthReq);
             }
 
             @Override
@@ -210,8 +207,8 @@ public class MainActivity extends AppCompatActivity {
         spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                yearReq = yearList.get(position).toString();
-                Log.i(TAG, "romedal777 " + yearList.get(position) + yearReq);
+                yearReq = yearList.get(position);
+                Log.i(TAG, yearList.get(position) + yearReq);
             }
 
             @Override
@@ -224,45 +221,46 @@ public class MainActivity extends AppCompatActivity {
 
     public String getDayOfMonth(String month, String year)
     {
-        int daysCount = 0, date = 1;
+        int daysCount, date = 1;
         DecimalFormat twodigits = new DecimalFormat("00");
         Calendar calendar = Calendar.getInstance();
         int yearCalendar = Integer.parseInt(year);
         int monthCalendar = Integer.parseInt(month);
         calendar.set(yearCalendar, monthCalendar - 1, date);
         daysCount = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        Log.d(TAG, "number of days in month: monthCalendar yearCalendar daysCount" + monthCalendar + " " + yearCalendar + " " + daysCount);
-        Log.d(TAG, "number of days in month: " + twodigits.format(daysCount));
+        Log.i(TAG, "number of days in month: monthCalendar yearCalendar daysCount" + monthCalendar + " " + yearCalendar + " " + daysCount);
+        Log.i(TAG, "number of days in month: " + twodigits.format(daysCount));
         return twodigits.format(daysCount);
     }
 
     private float calculate10K_eur(String usd) {
+
         float usd10000eur = Float.parseFloat(usd);
-        Log.d(TAG, "converted => " + usd10000eur);
+        Log.i(TAG, "converted => " + usd10000eur);
         usd10000eur *= 10000;
-        Log.d(TAG, "after multiplay => " + usd10000eur);
+        Log.i(TAG, "after multiplay => " + usd10000eur);
         return usd10000eur;
+
     }
-//HashMap<PointValue, String>
+
     private void setChart(Map<PointValue, String> hp){
         LineChartView chart = findViewById(R.id.chart);
+
         chart.setTransitionName("romedal trans name");
-//        chart.setTooltipText("romedal chart");
         chart.setContentDescription("romedal content desc");
+
         Axis axisX = new Axis();
         axisX.setName("Day of month");
         axisX.setHasLines(true);
         axisX.setAutoGenerated(true);
         axisX.setHasSeparationLine(true);
         axisX.setHasTiltedLabels(true);
+
         Axis axisY = new Axis();
         axisY.setName("10K EUR = $");
         axisY.setHasLines(true);
         axisY.setInside(true);
-//        axisY.setHasSeparationLine(true);
-//        axisY.setHasTiltedLabels(true);
-//        axisY.setAutoGenerated(true);
-//        axisY.setTextColor(0xFF000000);
+
         List listX = new ArrayList<AxisValue>();
         List listY = new ArrayList<AxisValue>();
 
@@ -270,17 +268,17 @@ public class MainActivity extends AppCompatActivity {
         {
             listX.add(new AxisValue(i));
         }
+
         for (int i = 8000; i < 12500; i+=50)
         {
             listY.add(new AxisValue(i));
         }
 
-//        listY.add(new AxisValue(12300));
-//        listY.add(new AxisValue(12350));
         axisX.setValues(listX);
         axisY.setValues(listY);
         chart.setInteractive(true);
-        List<PointValue> values = new ArrayList<PointValue>();
+        List<PointValue> values = new ArrayList<>();
+
         for (Map.Entry<PointValue, String> set : hp.entrySet()) {
             Log.d(TAG,set.getKey().getX() + " =77= " + set.getKey().getY());
             values.add(set.getKey());
@@ -295,7 +293,8 @@ public class MainActivity extends AppCompatActivity {
         line.setHasLabelsOnlyForSelected(true);
         line.setStrokeWidth(2);
         line.setPointRadius(10);
-        List<Line> lines = new ArrayList<Line>();
+
+        List<Line> lines = new ArrayList<>();
         lines.add(line);
 
         LineChartData data = new LineChartData();
