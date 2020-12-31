@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void makeSpinners() {
 
-        Spinner spinner  = findViewById(R.id.spinner);
-        Spinner spinner2 = findViewById(R.id.spinner2);
+        Spinner spinnerYear  = findViewById(R.id.spinnerYear);
+        Spinner spinnerMonth = findViewById(R.id.spinnerMonth);
 
         Map<String, String> monthMap = new HashMap<>();
         monthMap.put(getString(R.string.Jan), getString(R.string.d1));
@@ -162,12 +162,12 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> yearList = new ArrayList<>();
 
-        for (int i = 2020; i > 1999; i--){
+        for (int i = 2021; i >= 1999; i--){
             yearList.add((String.valueOf(i)));
         }
 
-        spinner = findViewById(R.id.spinner);
-        spinner2 = findViewById(R.id.spinner2);
+        spinnerYear = findViewById(R.id.spinnerYear);
+        spinnerMonth = findViewById(R.id.spinnerMonth);
 
         List<String> monthList = new ArrayList<>();
         monthList.add(getString(R.string.Jan));
@@ -183,18 +183,41 @@ public class MainActivity extends AppCompatActivity {
         monthList.add(getString(R.string.Nov));
         monthList.add(getString(R.string.Dec));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, monthList);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, yearList);
+        List<String> monthList2021 = new ArrayList<>();
+        monthList2021.add(getString(R.string.Jan));
+//        monthList.add(getString(R.string.Fab));
+//        monthList.add(getString(R.string.Mar));
+//        monthList.add(getString(R.string.Apr));
+//        monthList.add(getString(R.string.May));
+//        monthList.add(getString(R.string.Jun));
+//        monthList.add(getString(R.string.Jul));
+//        monthList.add(getString(R.string.Aug));
+//        monthList.add(getString(R.string.Sep));
+//        monthList.add(getString(R.string.Oct));
+//        monthList.add(getString(R.string.Nov));
+//        monthList.add(getString(R.string.Dec));
 
-        spinner.setAdapter(adapter);
-        spinner2.setAdapter(adapter2);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        ArrayAdapter<String> adapterMonth = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, monthList);
+        ArrayAdapter<String> adapterMonth2021 = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, monthList2021);
+        ArrayAdapter<String> adapterYear = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, yearList);
+
+        spinnerYear.setAdapter(adapterYear);
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                monthReq = monthMap.get(monthList.get(position));
-                Log.i(TAG, monthList.get(position) + " " + monthReq);
+                yearReq = yearList.get(position);
+                if (!yearReq.contentEquals("2021"))
+                {
+                    Spinner spinner2 = findViewById(R.id.spinnerMonth);
+                    spinner2.setAdapter(adapterMonth);
+                }
+                else
+                {
+                    Spinner spinner2 = findViewById(R.id.spinnerMonth);
+                    spinner2.setAdapter(adapterMonth2021);
+                }
             }
 
             @Override
@@ -203,11 +226,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                yearReq = yearList.get(position);
-                Log.i(TAG, yearList.get(position) + yearReq);
+                monthReq = monthMap.get(monthList.get(position));
+                Log.i(TAG, monthList.get(position) + " " + monthReq);
             }
 
             @Override

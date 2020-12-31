@@ -57,7 +57,7 @@
         app:layout_constraintVertical_bias="0" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/spinnerYear"
         android:layout_width="110dp"
         android:layout_height="22dp"
         android:layout_marginTop="20dp"
@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/chart" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/spinnerMonth"
         android:layout_width="115dp"
         android:layout_height="22dp"
         android:layout_marginStart="8dp"
@@ -79,7 +79,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txtv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toEndOf="@id/spinner"
+        app:layout_constraintStart_toEndOf="@id/spinnerYear"
         app:layout_constraintTop_toBottomOf="@+id/chart"
         app:layout_constraintVertical_bias="0.22"
         tools:visibility="visible" />
