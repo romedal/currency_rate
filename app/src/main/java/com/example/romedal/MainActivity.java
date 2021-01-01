@@ -107,11 +107,17 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject rates = ResponseObject.getJSONObject("rates");
                         Iterator<String> keys = rates.keys();
                         Map treeMap = new TreeMap<Integer, Integer>();
+
                         if (null == rates.names())
                         {
                             textView.setText(getString(R.string.bad_responce));
+                            textView.setTextColor(getColor(R.color.design_default_color_error));
+                            LineChartView chart = findViewById(R.id.chart);
+                            chart.clearAnimation();
+                            chart.setLineChartData(null);
                             return;
                         }
+
                         for (int i = 0; i < rates.names().length(); i++) {
                             Log.v(TAG, "" + Integer.parseInt(rates.names().getString(i).substring(8)));
                             treeMap.put(Integer.parseInt(rates.names().getString(i).substring(8)), i);
@@ -140,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 textView.setText(getString(R.string.err_text));
+                textView.setTextColor(getColor(R.color.design_default_color_error));
             }
         });
         stringRequest.setTag(TAG);
@@ -190,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> monthList2021 = new ArrayList<>();
         monthList2021.add(getString(R.string.Jan));
-//        monthList.add(getString(R.string.Fab));
 //        monthList.add(getString(R.string.Mar));
 //        monthList.add(getString(R.string.Apr));
+//        monthList.add(getString(R.string.Fab));
 //        monthList.add(getString(R.string.May));
 //        monthList.add(getString(R.string.Jun));
 //        monthList.add(getString(R.string.Jul));
