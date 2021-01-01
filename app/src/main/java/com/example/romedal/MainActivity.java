@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         int c = 1;
         String reqFinal = String.format("https://api.exchangeratesapi.io/history?start_at=%s-%s-01&end_at=%s-%s-%s&symbols=USD&&base=EUR", yearReq, monthReq, yearReq, monthReq, getDayOfMonth(monthReq, yearReq));
-        Log.i(TAG, reqFinal);
+        Log.i(TAG, "reqFinal " + reqFinal);
         stringRequest = new StringRequest(Request.Method.GET, reqFinal,
                 (Response.Listener<String>) response -> {
                     String result = "";
@@ -107,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject rates = ResponseObject.getJSONObject("rates");
                         Iterator<String> keys = rates.keys();
                         Map treeMap = new TreeMap<Integer, Integer>();
+                        if (null == rates.names())
+                        {
+                            textView.setText(getString(R.string.bad_responce));
+                            return;
+                        }
                         for (int i = 0; i < rates.names().length(); i++) {
                             Log.v(TAG, "" + Integer.parseInt(rates.names().getString(i).substring(8)));
                             treeMap.put(Integer.parseInt(rates.names().getString(i).substring(8)), i);

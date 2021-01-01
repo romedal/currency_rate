@@ -2,6 +2,7 @@
     <string name="app_name">romedal</string>
     <string name="button_text">GET RATES</string>
     <string name="greetings_text">Hello dear client</string>
+    <string name="bad_responce">Response is empty from request</string>
     <string name="first_part_msg">10K EUR is: </string>
     <string name="second_part_msg">for date </string>
     <string name="err_text">That didn\'t work! </string>
