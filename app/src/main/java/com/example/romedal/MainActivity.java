@@ -3,6 +3,8 @@ package com.example.romedal;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -90,6 +93,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+//         Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+        findViewById(R.id.button).performClick();
+    }
+
     public void getPeriodReqExchange(android.view.View d) {
 
         final TextView textView = (TextView) findViewById(R.id.txtv);
@@ -142,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     setChart(points);
                     textView.setText(result);
+                    textView.setTextColor(getColor(R.color.black));
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
