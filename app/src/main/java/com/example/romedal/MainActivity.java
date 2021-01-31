@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String URL_CUR_SYMBOL = "https://api.exchangeratesapi.io/latest?symbols=USD";
     private static final String URL_CUR_PERIOD = "https://api.exchangeratesapi.io/history?start_at=2020-12-01&end_at=2020-12-30&symbols=USD&&base=EUR";
     private static String monthReq= "01";
-    private static String yearReq= "2020";
+    private static String yearReq= "2021";
 
     StringRequest stringRequest;
     RequestQueue queue;
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         makeSpinners();
+        findViewById(R.id.button).performClick();
     }
 
     public void getReqExchange(android.view.View d) {
@@ -98,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
 //         Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
         findViewById(R.id.button).performClick();
     }
@@ -213,9 +214,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> monthList2021 = new ArrayList<>();
         monthList2021.add(getString(R.string.Jan));
+        monthList2021.add(getString(R.string.Fab));
 //        monthList.add(getString(R.string.Mar));
 //        monthList.add(getString(R.string.Apr));
-//        monthList.add(getString(R.string.Fab));
 //        monthList.add(getString(R.string.May));
 //        monthList.add(getString(R.string.Jun));
 //        monthList.add(getString(R.string.Jul));
