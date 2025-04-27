@@ -1,36 +1,66 @@
 <resources>
     <string name="app_name">romedal</string>
+    <string name="Axis_X_label">Day of month</string>
+    <string name="Axis_Y_label">EUR/USD rates</string>
     <string name="button_text">GET RATES</string>
     <string name="greetings_text">Hello dear client</string>
-    <string name="bad_responce">Response is empty from request</string>
+    <string name="bad_response">Response is empty from request</string>
+    <string name="exc_msg">exception is caught by romedal </string>
+    <string name="err_month_arrays">Incompatible arrays \'names\' and \'values\' </string>
     <string name="first_part_msg">10K EUR is: </string>
     <string name="second_part_msg">for date </string>
     <string name="err_text">That didn\'t work! </string>
-    <string name="exc_msg">exception is caught by romedal </string>
-    <string name="Jan">January</string>
-    <string name="Fab">Fabuary</string>
-    <string name="Mar">March</string>
-    <string name="Apr">April</string>
-    <string name="May">May</string>
-    <string name="Jun">June</string>
-    <string name="Jul">July</string>
-    <string name="Aug">August</string>
-    <string name="Sep">September</string>
-    <string name="Oct">October</string>
-    <string name="Nov">November</string>
-    <string name="Dec">December</string>
-    <string name="d1">01</string>
-    <string name="d2">02</string>
-    <string name="d3">03</string>
-    <string name="d4">04</string>
-    <string name="d5">05</string>
-    <string name="d6">06</string>
-    <string name="d7">07</string>
-    <string name="d8">08</string>
-    <string name="d9">09</string>
-    <string name="d10">10</string>
-    <string name="d11">11</string>
-    <string name="d12">12</string>
+    <string name="orient_alert_portrait">device orientation has changed to portrait </string>
+    <string name="orient_alert_landscape">device orientation has changed to landscape </string>
+    <string name="chart_transition_name">currencies chart transition name</string>
+    <string name="chart_content_desc">chart content description</string>
+    <string name="JSON_resp_err_info">info</string>
+    <string name="JSON_resp_err_code">code</string>
+    <string name="JSON_req_final">https://api.currencylayer.com/timeframe?access_key=%s&amp;start_date=%s-%s-01&amp;end_date=%s-%s-%s&amp;source=EUR&amp;currencies=USD</string>
+    <string name="JSON_req_final_OLD">https://api.exchangeratesapi.io/history?start_at=%s-%s-01&amp;end_at=%s-%s-%s&amp;symbols=USD&amp;base=EUR</string>
+    <string name="TAG">r_TAG</string>
+    <!--TODO decide whether below deprecated source is relevant-->
+    <string name="URL_CUR_SYMBOL">https://api.exchangeratesapi.io/latest?symbols=USD</string>
+    <!--TODO decide whether below deprecated source is needed-->
+    <string name="URL_CUR_PERIOD_OLD">https://api.exchangeratesapi.io/history?start_at=2020-12-01&amp;end_at=2020-12-30&amp;symbols=USD&amp;base=EUR</string>
+    <string name="URL_CUR_PERIOD">https://api.currencylayer.com/timeframe?access_key=6d99c133ba03db74258d1bc3376459a9&amp;source=EUR&amp;currencies=USD&amp;start_date=2010–03-01&amp;end_date=2010-04-01</string>
+    <string name="accessKey">6d99c133ba03db74258d1bc3376459a9</string>>
+
+
+    <integer name="MAX_MONTH_VALUE">12</integer>
+    <integer name="MIN_YEAR_VALUE">1999</integer>
+    <integer name="MAX_DAYS_OF_MONTH">31</integer>
+
+    <string-array name="month_names">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string-array name="month_values">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
     <string name="DecFormPattern">##,###</string>
 
 </resources>
